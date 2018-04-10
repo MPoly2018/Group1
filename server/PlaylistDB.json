@@ -1,0 +1,51 @@
+{
+    {
+		"username":"user1",
+		"playlists": [
+			{ "playlistName": "playlist1", 
+			  "songs" : [
+			  {
+				"songID": "song1",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+				},
+				"songID": "song2",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+				},
+				"songID": "song3",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+				}
+			},
+			{ "playlistName": "playlist2", 
+			  "songs" : [
+			  {
+				"songID": "song1",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+					},
+				"songID": "song2",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+					},
+				"songID": "song3",
+				"info": {
+					"name":"Alright",
+					"supplier":"Spotify",
+					"uri":"<placeholder>"
+					}
+				}
+    	]
+			}
+ }

@@ -1,0 +1,16 @@
+#song-search{
+    padding:0;
+    margin-left:12px;
+    margin-right:12px;
+}   
+
+#song-list tr td:first-child{
+    width:15%;
+}
+#song-list tr td:nth-child(2) {
+    width:70%;
+}
+
+#song-list tr td:nth-child(3) {
+    width:15%;
+}
