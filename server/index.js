@@ -9,12 +9,12 @@ const PORT = process.env.PORT || 5000;
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
-var fs = require('fs');
 
 
+var SearchService = require('./SearchService');
 
 var SearchTool = require('./SpotifyTools');
-var playlists = require('./PlaylistManager');
+var playlists = require('./PlaylistService');
 
 var client_id = 'baa19d6c1de84c31be6ae3be5021323e'; // Your client id
 var client_secret = 'a3798faf894c4329b20d4e32af5e1791'; // Your secret
@@ -46,6 +46,7 @@ app.use(function (req, res, next) {
     return next();
   }
 });
+
 require('./Authentification')(app);
 
 
@@ -54,10 +55,12 @@ var stateKey = 'spotify_auth_state';
 
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
-   
-var jsonParser = bodyParser.json()
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
  
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.use(bodyParser.json());
 
    //LOGIN
 app.post('/Login', function(req, res) {
@@ -73,18 +76,6 @@ app.post('/Login', function(req, res) {
 
   console.log(spotifyPlayer.accessToken);
 }); 
-
-
-app.post('/search', jsonParser, function(req, res) {
-	res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-	res.set('Content-Type', 'application/json');
-	//On prend ici le parametre pour la recherche, soit req.body.SearchName
-	//La fonction SongSearch de de SpotifyTools utilise cette donnée pour aller chercher les answers en forme json
-    var answer = SearchTool.SongSearch(req.body.SearchName);
-    res.send(answer);
-});
 
 app.post('/addPlaylist', function(req, res) {
 	res.header('Access-Control-Allow-Origin', "*");
@@ -115,6 +106,20 @@ app.post('/api', function (req, res) {
     {Supplier:"Spotify",Name:"La Bamba"}
   ]
   ));	  
+});  
+ 
+app.post('/search', async function (req, res) {
+
+  var searchService = new SearchService();
+  try{
+    var songs =  await searchService.searchSong(req.body.name)
+
+  }catch(e){
+    console.log(e)
+  }
+
+  res.set('Content-Type', 'application/json');
+  res.send(JSON.stringify(songs));	  
 });  
 
   app.listen(PORT, function () {

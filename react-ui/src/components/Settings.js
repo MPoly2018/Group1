@@ -39,7 +39,9 @@ export default class Settings extends Component {
                                 <td><img src={spotifyLogo} className="img-fluid" alt="User Image" /></td>
                             </tr>
                             <tr className="text-center">
-                                <td><button type="button" className="btn btn-primary btn-block " ><a href='http://localhost:5000/login'>Connect to Spotify</a ></button></td>
+                            <form method="post"action="http://localhost:5000/login?provider=spotify">
+                                <td><button type="submit" className="btn btn-primary btn-block " >Connect to Spotify</button></td>
+                            </form>
                             </tr>
                         </table>
                     </div>
@@ -50,7 +52,9 @@ export default class Settings extends Component {
                                 <td><img src={deezerLogo} className="img-fluid" alt="User Image" /></td>
                             </tr>
                             <tr className="text-center">
-                                <td><button type="button" className="btn btn-primary btn-block text-center">Connect to deezer</button></td>                             
+                            <form method="post"action="http://localhost:5000/login?provider=deezer">
+                                <td><button type="submit" className="btn btn-primary btn-block " >Connect to Deezer</button></td>
+                            </form>                  
                             </tr>
                         </table>
                     </div>
@@ -60,7 +64,9 @@ export default class Settings extends Component {
                                 <td><img src={soundcloudLogo} className="img-fluid" alt="User Image" /></td>
                             </tr>
                             <tr className="text-center"> 
-                                <td><button type="button" className="btn btn-primary btn-block">Connect to SoundCloud</button></td>                             
+                            <form method="post"action="http://localhost:5000/login?provider=jamendo">
+                                <td><button type="submit" className="btn btn-primary btn-block " >Connect to Jamendo</button></td>
+                            </form>                         
                             </tr>
                         </table>
                     </div>

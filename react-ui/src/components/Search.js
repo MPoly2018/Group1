@@ -50,29 +50,29 @@ export default class Search extends Component {
         });
       }
 
-    componentDidMount() {
-        fetch('/api',{
+    // componentDidMount() {
+    //     fetch('/api',{
       
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); 
-            }
+    //     })
+    //     .then(response => {
+    //         if (response.ok) {
+    //             return response.json(); 
+    //         }
       
-        }).then(json => {
-           debugger;
-            this.setState({Playlists : json});
-        })
-        .catch(e => {
-          this.setState({
-            message: `API call failed: ${e}`,
-            fetching: false
-          });
-        })
-    }
+    //     }).then(json => {
+    //        debugger;
+    //         this.setState({Playlists : json});
+    //     })
+    //     .catch(e => {
+    //       this.setState({
+    //         message: `API call failed: ${e}`,
+    //         fetching: false
+    //       });
+    //     })
+    // }
 
     onChange({target}) {
-        fetch('/api',{
+        fetch('/search',{
             method: "post",
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export default class Search extends Component {
 
                     <div className="row">
                         <div className="input-group">
-                            <input id="song-search" type="text" className="form-control"  onChange={this.onChange.bind(this)} placeholder="Username" aria-describedby="basic-addon1" />
+                            <input id="song-search" type="text" className="form-control"  onBlur={this.onChange.bind(this)} placeholder="enter song name" aria-describedby="basic-addon1" />
                         </div>
                     </div>
 
@@ -152,7 +152,8 @@ export default class Search extends Component {
                                 <thead>
                                 <tr>
                                     <th>Supplier</th>
-                                    <th>song name</th>
+                                    <th>Song </th>
+                                    <th>Artist</th>
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
@@ -160,7 +161,7 @@ export default class Search extends Component {
                                     {
                                         this.state.song.map(function(song){
                                          return(
-                                         <tr><td>  {song.Supplier}  </td><td ><div>{song.Name}</div></td>  <td>  <button type="button"  class="btn btn-success float-right">Play</button> <button type="button" class="btn btn-secondary float-right" onClick={self.openModal}>Add to playlist</button>   </td></tr>
+                                         <tr><td>  {song.Supplier}  </td><td ><div>{song.Name}</div></td>  <td>  {song.Artist}  </td><td>  <button type="button"  class="btn btn-success float-right">Play</button> <button type="button" class="btn btn-secondary float-right" onClick={self.openModal}>Add to playlist</button>   </td></tr>
                                          )
                                     })}
                                 </tbody>

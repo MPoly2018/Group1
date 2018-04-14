@@ -8,9 +8,12 @@
     width:15%;
 }
 #song-list tr td:nth-child(2) {
-    width:70%;
+    width:35%;
+}
+#song-list tr td:nth-child(3) {
+    width:35%;
 }
 
-#song-list tr td:nth-child(3) {
+#song-list tr td:nth-child(4) {
     width:15%;
 }

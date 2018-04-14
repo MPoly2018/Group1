@@ -65,6 +65,12 @@ export default class Playlists extends Component {
                 <div className="row">
                     <div className="col-sm">
                         <h2>Playlists</h2>
+                      
+                            <div className="input-group">
+                                <input id="song-search" type="text" className="form-control"  placeholder="Username" aria-describedby="basic-addon1" />
+                            </div>
+
+
                         <table className="table table-dark table-striped">
                             <thead>
                             <tr>

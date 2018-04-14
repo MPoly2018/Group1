@@ -1,9 +1,12 @@
 var fs = require('fs');
 
 //Classe incomplete
-module.exports = {
+module.exports =  class SearchService {
+
+	constructor(options = {}) {
+	  }
 	
-	addPlaylist: function (username, nameOfPlaylist) {
+	addPlaylist(username, nameOfPlaylist) {
 	
 		fs.readFile('playlistDB.json', 'utf8', function readFileCallback(err, data){
 			if (err){
@@ -15,7 +18,7 @@ module.exports = {
 				// {
 					
 				// }
-}
+			}
 			json = JSON.stringify(obj);
 			fs.writeFile('playlistDB.json', json, 'utf8', callback);
 		}});
