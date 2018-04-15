@@ -1,4 +1,3 @@
-
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var DZ = require('node-deezer');
@@ -7,33 +6,34 @@ var Jamendo = require('jamendo');
 var fs = require('fs');
 
 
-module.exports = {
-
+module.exports = class AuthentificationService  {
+    constructor(options = {}) {
+        this.spotify_client_id = 'baa19d6c1de84c31be6ae3be5021323e'; // Your client id
+        this.spotify_client_secret = 'a3798faf894c4329b20d4e32af5e1791'; // Your secret
+        this.spotify_redirect_uri = 'http://localhost:5000/spotifyCallback'; // Your redirect uri
+        this.stateKey = 'spotify_auth_state';
+    
+        //Deezer dev information
+        this.appId = '277082'; // from developers.deezer.com 
+        this.deezerRedirectUrl = 'http://localhost:5000/deezerCallback';
+        this.deezerAppSecret = '18578f18996081af3f36f468e52febf9';
+    
+        this.jamendo_client_id = '8fa50966';  
+	}
 
     //Spotify dev information
-    spotify_client_id : 'baa19d6c1de84c31be6ae3be5021323e', // Your client id
-    spotify_client_secret : 'a3798faf894c4329b20d4e32af5e1791', // Your secret
-    spotify_redirect_uri : 'http://localhost:5000/spotifyCallback', // Your redirect uri
-    stateKey : 'spotify_auth_state',
 
-    //Deezer dev information
-    appId : '277082', // from developers.deezer.com 
-    deezerRedirectUrl : 'http://localhost:5000/deezerCallback',
-    deezerAppSecret : '18578f18996081af3f36f468e52febf9',
-
-    jamendo_client_id : '8fa50966',    
-
-    generateRandomString : function(length) {
+    generateRandomString(stringLength) {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         
-        for (var i = 0; i < length; i++) {
+        for (var i = 0; i < stringLength; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
-    },
+    }
 
-    SpotifyAuthentification: function(req,res){
+    SpotifyAuthentification(req,res){
 
         var state = this.generateRandomString(16);
         res.cookie(this.stateKey, state);   
@@ -52,9 +52,9 @@ module.exports = {
         }));
 
         return res;
-    },
+    }
 
-    SpotifyCallback: function(req,res){
+    SpotifyCallback(req,res){
         var code = req.query.code || null;
         var state = req.query.state || null;
         var storedState = req.cookies ? req.cookies[this.stateKey] : null;
@@ -113,16 +113,16 @@ module.exports = {
         }
 
     return res;
-    },
+    }
     
-    DeezerAuthentification: function(req,res){
+    DeezerAuthentification(req,res){
         var deezer = new DZ();
         var loginUrl =  deezer.getLoginUrl(this.appId, this.deezerRedirectUrl)
         res.redirect(loginUrl);
 
-    },
+    }
 
-    DeezerCallback : function(req,res){
+    DeezerCallback(req,res){
         var deezer = new DZ();
         var code = req.query['code'];
         if (code) {
@@ -130,45 +130,18 @@ module.exports = {
           // we'll gloss over it here 
           var err = req.query.error_reason;
           
-          // Since we have this code, we can trust that the user  
-          // actually meant to grant us access to their account. 
-          console.log("here")
-          // Now we need to combine this code with our app credentials  
-          // to prove to Deezer that we're a valid app-- if everything works, 
-          // we'll get an `access_token` we can use to represent the user 
-          // for a period of time (or "forever" if we have the offline_access permission) 
+
           deezer.createSession(this.appId, this.deezerAppSecret, code, function (err, result) {
             fs.writeFile('deezerAuthentification.txt', 'access token:'+ result.accessToken , function (err) {
                 if (err) throw err;
             });
 
-
-            // If an error occurs, we should handle it 
-            // (again, see express example for more) 
-          
-                // Otherwise, everything is cool and we have the access token and lifespan (`expires`) 
-                // in `result.accessToken` and `result.expires` 
-                console.log(result);
-                
-                // Now we can do API requests! 
-                
-                // e.g. search for artists with names containing the phrase 'empire' 
-                deezer.request(result.accessToken,
-                {
-                resource: 'search/artist',
-                method: 'get',
-                fields: { q: 'empire' }
-                },
-                function done (err, results) {
-                if (err) throw err;
-                console.log(results);
-                });
            });
            res.redirect("http://localhost:3000/#/Settings/" );
         }
-    },
+    }
 
-    JamendoAuthentification : function ( req,res){
+    JamendoAuthentification( req,res){
         var jamendo = new Jamendo({
             client_id : this.jamendo_client_id,     // Specify your client_id 
                                           // see http://developer.jamendo.com/v3.0#obtain_client_id 
@@ -187,9 +160,9 @@ module.exports = {
            res.redirect(login_url);
             
           });
-    },
+    }
 
-    JamendoCallback : function(req,res){
+    JamendoCallback(req,res){
         var code = req.query.code || null;
         
         var jamendo = new Jamendo({

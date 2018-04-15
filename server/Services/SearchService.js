@@ -1,5 +1,5 @@
-var fileHelper = require('./Helpers/FileHelper');
-var authentificationService = require('./AuthentificationService');
+var fileHelper = require('../Helpers/FileHelper');
+var AuthentificationService = require('./AuthentificationService');
 var SpotifyWebApi = require('spotify-web-api-node');
 var DZ = require('node-deezer');
 var request = require('sync-request');
@@ -11,7 +11,8 @@ module.exports =  class SearchService{
       this.spotifyToken = fileHelper.GetAccessToken('./spotifyAuthentification.txt');
       this.deezerToken = fileHelper.GetAccessToken('./deezerAuthentification.txt');
       this.jamendoToken = fileHelper.GetAccessToken('./jamendoAuthentification.txt');
-      this.jamendo_client_id =  authentificationService.jamendo_client_id; 
+      var authService = new AuthentificationService();
+      this.jamendo_client_id =  authService.jamendo_client_id; 
       this.spotifyApi = new SpotifyWebApi({
         accessToken : this.spotifyToken
       });
@@ -31,13 +32,13 @@ module.exports =  class SearchService{
    
         if(this.deezerToken){   
             var deezerSongs = self.searchDeezer(songName);
-            console.log(deezerSongs);
            Array.prototype.push.apply(songList, deezerSongs);
             
         }
 
         if(this.jamendoToken){
             var jamendoSongs = self.searchJamendo(songName);
+            console.log(jamendoSongs);
             Array.prototype.push.apply(songList, jamendoSongs);
 
         }    

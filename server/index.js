@@ -11,13 +11,11 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
 
-var SearchService = require('./SearchService');
+var SearchService = require('./Services/SearchService');
+var PlaylistService = require('./Services/PlaylistService');
 
-var SearchTool = require('./SpotifyTools');
-var playlists = require('./PlaylistService');
 
-var client_id = 'baa19d6c1de84c31be6ae3be5021323e'; // Your client id
-var client_secret = 'a3798faf894c4329b20d4e32af5e1791'; // Your secret
+
 
 
 
@@ -49,10 +47,6 @@ app.use(function (req, res, next) {
 
 require('./Authentification')(app);
 
-
-
-var stateKey = 'spotify_auth_state';
-
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
@@ -62,51 +56,58 @@ app.use(bodyParser.urlencoded({
  
 app.use(bodyParser.json());
 
-   //LOGIN
-app.post('/Login', function(req, res) {
-  console.log("hello");
-	res.header('Access-Control-Allow-Origin', "*");
+app.post('/playlist', function(req, res) {
+  res.header('Access-Control-Allow-Origin', "*");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-  var Spotify = require('./SpotifyPlayer')
-  var spotifyPlayer = new Spotify("SpotifyPlayer");
-  spotifyPlayer.init();
-  spotifyPlayer.login();
+  var playlistService = new PlaylistService();
+ 
+  var playlists = playlistService.addPlaylist(req.body.name);
 
-  console.log(spotifyPlayer.accessToken);
-}); 
+  console.log(playlists);
 
-app.post('/addPlaylist', function(req, res) {
-	res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-	res.set('Content-Type', 'application/json');
-	//On ajoute la playlist a la BD et en retour on renvoi la nouvelle BD pour un update live.
-	var currentUser = SearchTool.Username;
-    var newList = SearchTool.AddPlaylist(currentUser,req.body.Name);
-    res.send(answer);
+  res.send(JSON.stringify(playlists));	
 });
 
-// only for test purpose
+app.get('/playlist', function(req, res) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-app.get('/api', function (req, res) {
-    res.set('Content-Type', 'application/json');
-  res.send(JSON.stringify([
-    {Supplier:"Spotify",Name:"Staying Alive"},
-    {Supplier:"Spotify",Name:"La Bamba"}
-  ]
-  ));
-});	  
+  var playlistService = new PlaylistService(); 
+  var playlists = playlistService.getPlaylist();
 
-app.post('/api', function (req, res) {
-    res.set('Content-Type', 'application/json');
-  res.send(JSON.stringify([
-    {Supplier:"Spotify",Name:"Staying Alive"},
-    {Supplier:"Spotify",Name:"La Bamba"}
-  ]
-  ));	  
-});  
+  res.send(JSON.stringify(playlists));	
+});
+
+app.post('/playlist-content', function(req, res) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  console.log(req.body.playlistName);
+  var playlistService = new PlaylistService();
+ 
+  var content = playlistService.getPlaylistContent(req.body.playlistName);  
+
+  res.send(JSON.stringify(content));	
+});
+
+app.post('/playlist-content-add', function(req, res) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  var playlistService = new PlaylistService();
+  console.log(req.body.playlistName);
+  console.log(req.body.songName);
+  var content = playlistService.addSongToPlaylist(req.body.songName,req.body.playlistName);  
+
+  res.send(JSON.stringify(content));	
+});
+
+
  
 app.post('/search', async function (req, res) {
 

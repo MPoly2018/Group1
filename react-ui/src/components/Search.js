@@ -12,7 +12,8 @@ const customStyles = {
       right                 : 'auto',
       bottom                : 'auto',
       marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)'
+      transform             : 'translate(-50%, -50%)',
+      width                 : '700px'
     }
   };
   
@@ -33,12 +34,12 @@ export default class Search extends Component {
         this.closeModal = this.closeModal.bind(this)
       }
 
-      openModal (song) {
+      openModal (e) {
         this.setState({ 
             song : this.state.song,
             Playlists: this.state.Playlists,
             modalIsOpen: true,
-            songToAdd: song
+            chosenSong: e.nativeEvent.target.id
         });
       }
       
@@ -50,26 +51,24 @@ export default class Search extends Component {
         });
       }
 
-    // componentDidMount() {
-    //     fetch('/api',{
+    componentDidMount() {
+        fetch('/playlist')
+        .then(response => {
+            if (response.ok) {
+                return response.json(); 
+            }
       
-    //     })
-    //     .then(response => {
-    //         if (response.ok) {
-    //             return response.json(); 
-    //         }
-      
-    //     }).then(json => {
-    //        debugger;
-    //         this.setState({Playlists : json});
-    //     })
-    //     .catch(e => {
-    //       this.setState({
-    //         message: `API call failed: ${e}`,
-    //         fetching: false
-    //       });
-    //     })
-    // }
+        }).then(json => {
+            debugger;
+            this.setState({Playlists : json});
+        })
+        .catch(e => {
+          this.setState({
+            message: `API call failed: ${e}`,
+            fetching: false
+          });
+        })
+     }
 
     onChange({target}) {
         fetch('/search',{
@@ -101,34 +100,35 @@ export default class Search extends Component {
         this.setState({ showMe : true} );
      }
 
-     addSongToPlaylist({target}) {
-        // fetch('/api',{
-        //     method: "post",
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Accept': 'application/json',                  
-        //     },
-        //     body: JSON.stringify({
-        //         name: target.value,
-        //     })
-        // })
-        // .then(response => {
-        //     if (response.ok) {
-        //         return response.json(); 
-        //     }
+     addSongToPlaylist(e    ) {
+        fetch('/playlist-content-add',{
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',                  
+            },
+            body: JSON.stringify({
+                playlistName: e.nativeEvent.target.innerText,
+                songName: this.state.chosenSong
+            })
+        })
+        .then(response => {
+            this.closeModal();
+            if (response.ok) {
+                return response.json(); 
+            }
       
-        // }).then(json => {
-          
-        //     this.setState({song : json});
-        // })
-        // .catch(e => {
-        //   this.setState({
-        //     message: `API call failed: ${e}`,
-        //     fetching: false
-        //   });
-        // })
+        }).then(json => {
 
-        // this.setState({ showMe : true} );
+        })
+        .catch(e => {
+          this.setState({
+            message: `API call failed: ${e}`,
+            fetching: false
+          });
+        })
+
+        this.setState({ showMe : true} );
      }
 
     
@@ -161,7 +161,7 @@ export default class Search extends Component {
                                     {
                                         this.state.song.map(function(song){
                                          return(
-                                         <tr><td>  {song.Supplier}  </td><td ><div>{song.Name}</div></td>  <td>  {song.Artist}  </td><td>  <button type="button"  class="btn btn-success float-right">Play</button> <button type="button" class="btn btn-secondary float-right" onClick={self.openModal}>Add to playlist</button>   </td></tr>
+                                         <tr><td>  {song.Supplier}  </td><td ><div>{song.Name}</div></td>  <td>  {song.Artist}  </td><td>  <button type="button"  class="btn btn-success float-right">Play</button> <button id={song.Name+':'+song.Artist} type="button" class="btn btn-secondary float-right" onClick={self.openModal}>Add to playlist</button>   </td></tr>
                                          )
                                     })}
                                 </tbody>
@@ -185,7 +185,7 @@ export default class Search extends Component {
                             {
                                 this.state.Playlists.map(function(playlist){
                                     return(
-                                    <tr><td  onClick={self.addSongToPlaylist}>  {playlist.Name}  </td></tr>
+                                    <tr><td  onClick={self.addSongToPlaylist.bind(self)}>  {playlist.Name}  </td></tr>
                                     )
                             })}
                         </tbody>

@@ -4,13 +4,7 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var authentificationService = require("./AuthentificationService");
-
-
-
-
-
-
+var AuthentificationService = require("./Services/AuthentificationService");
 
 module.exports = function(app){
     
@@ -20,29 +14,31 @@ module.exports = function(app){
         
         var url = req.url
         var splittedUrl = url.split("provider=");
-
+        var authService = new AuthentificationService();
         switch(splittedUrl[1]){
             case "spotify":
-               authentificationService.SpotifyAuthentification(req,res);
+                authService.SpotifyAuthentification(req,res);
             case "deezer":
-               authentificationService.DeezerAuthentification(req,res);
+                authService.DeezerAuthentification(req,res);
             case "jamendo":
-               authentificationService.JamendoAuthentification(req,res);
+                authService.JamendoAuthentification(req,res);
         }
     });   
       
     app.get('/spotifyCallback', function(req, res) {
-        authentificationService.SpotifyCallback(req,res);
+        var authService = new AuthentificationService();
+        authService.SpotifyCallback(req,res);
     });
 
     app.get('/deezerCallback', function(req, res) {
-        authentificationService.DeezerCallback(req,res);
+        var authService = new AuthentificationService();        
+        authService.DeezerCallback(req,res);
     });
     app.get('/jamendoCallback', function(req, res) {
-        authentificationService.JamendoCallback(req,res);
+        var authService = new AuthentificationService();        
+        authService.JamendoCallback(req,res);
     });
-      
-      
+    
     app.get('/refresh_token', function(req, res) {
         console.log("refreshtoken")
         // requesting access token from refresh token
@@ -66,7 +62,6 @@ module.exports = function(app){
           }
         });
     });
-      
-      
+  
 }
 
