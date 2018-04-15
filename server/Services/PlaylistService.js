@@ -56,13 +56,14 @@ module.exports =  class PlaylistService {
 			console.log(e);
 			content = [];
 		}
+		
 
 		var playListContent = [];
 
 		content.forEach(function(element){
 			if(element.Name === playlistName){
 				element.Songs.forEach(function(el){
-					playListContent.push({Name:el.Name});
+					playListContent.push({Name:el.Name,Artist:el.Artist});
 				})
 				
 			}
@@ -73,6 +74,7 @@ module.exports =  class PlaylistService {
 
 
 	addSongToPlaylist(song,playlist){
+		
 		var content = [];
 
 		try{
@@ -84,11 +86,11 @@ module.exports =  class PlaylistService {
 
 		content.forEach(function(element){
 			if(element.Name === playlist){
-				element.Songs.push({Name:song});
+				var parsedSong = song.split(':');
+				element.Songs.push({Name:parsedSong[0],Artist:parsedSong[1]});
 			}
 		});
 
 		fs.writeFileSync('./Playlist.json', JSON.stringify(content));
-
 	}
 }

@@ -147,7 +147,7 @@ export default class Playlists extends Component {
                                 
                                 this.state.Playlists.map(function(playlist){
                                     return(
-                                    <tr ><td onClick={self.onplaylistClick.bind(self)} >{playlist.Name}</td></tr>
+                                    <tr ><td onClick={self.onplaylistClick.bind(self)}  >{playlist.Name}</td></tr>
                                     )
                                 })
                             }
@@ -159,7 +159,7 @@ export default class Playlists extends Component {
                         <table className="table table-dark table-striped">
                             <thead>
                             <tr>
-                                <th>Supplier</th>
+                                <th>Artist</th>
                                 <th>Song name</th>
 
                             </tr>
@@ -168,7 +168,7 @@ export default class Playlists extends Component {
                             {
                             this.state.PlaylistContent.map(function(song){
                                 return(
-                                <tr><td>  {song.Supplier}  </td><td> {song.Name}  </td></tr>
+                                <tr><td>  {song.Artist}  </td><td> {song.Name}  </td></tr>
                                 )
                             })
                             }
